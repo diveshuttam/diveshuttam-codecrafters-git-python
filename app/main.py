@@ -7,9 +7,9 @@ def print(*args, **kwargs):
     kwargs['file'] = sys.stderr
     __builtins__.print(*args, **kwargs) # call the original print
 
-def dprint(data):
+def dprint(*args, **kwargs):
     # print data in a human-readable format
-    __builtins__.print(data)
+    __builtins__.print(*args, **kwargs)
 
 
 def main():
