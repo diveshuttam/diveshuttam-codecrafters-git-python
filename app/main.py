@@ -1,6 +1,7 @@
 import sys
 import os
 import zlib
+import hashlib
 
 def print(*args, **kwargs):
     # redirect to stderr to avoid mixing logs with data
@@ -47,7 +48,7 @@ def main():
             # compress data with zlib
             compressed_data = zlib.compress(header + data)
             # calculate sha1 hash
-            hash = zlib.crc32(compressed_data).to_bytes(20, byteorder="big").hex()
+            hash = hashlib.sha1(compressed_data).hexdigest()
             # write data to file
             os.makedirs(f".git/objects/{hash[:2]}", exist_ok=True)
             with open(f".git/objects/{hash[:2]}/{hash[2:]}", "wb") as f:
