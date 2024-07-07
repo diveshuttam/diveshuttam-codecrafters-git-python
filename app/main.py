@@ -1,6 +1,15 @@
 import sys
 import os
 
+def print(*args, **kwargs):
+    # redirect to stderr to avoid mixing logs with data
+    kwargs['file'] = sys.stderr
+    __builtins__.print(*args, **kwargs) # call the original print
+
+def dprint(data):
+    # print data in a human-readable format
+    print(data)
+
 
 def main():
     # You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -22,7 +31,7 @@ def main():
         print(f"Hash: {hash}")
         with open(f".git/objects/{hash[:2]}/{hash[2:]}", "rb") as f:
             data = f.read()
-            print(data)
+            dprint(data.decode("ascii", errors="replace"))
     else:
         raise RuntimeError(f"Unknown command #{command}")
 
