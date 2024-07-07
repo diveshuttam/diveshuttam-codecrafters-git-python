@@ -36,7 +36,7 @@ def main():
             data = zlib.decompress(data)
             # skip till \x00
             data = data[data.index(b'\x00')+1:]
-            print(data)
+            dprint(data.decode())
     else:
         raise RuntimeError(f"Unknown command #{command}")
 
