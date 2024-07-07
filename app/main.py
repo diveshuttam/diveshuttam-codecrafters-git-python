@@ -54,6 +54,21 @@ def main():
             with open(f".git/objects/{hash[:2]}/{hash[2:]}", "wb") as f:
                 f.write(compressed_data)
             dprint(hash)
+    elif command == "ls-tree":
+        # --name-only
+        hash = sys.argv[3]
+        with open(f".git/objects/{hash[:2]}/{hash[2:]}", "rb") as f:
+            data = f.read()
+            # decode data with zlib
+            data = zlib.decompress(data)
+            # skip till \x00
+            data = data[data.index(b'\x00')+1:]
+            data = data.decode()
+            for line in data.split("\n"):
+                if not line:
+                    continue
+                mode, type, hash, name = line.split("\t")
+                dprint(name)
     else:
         raise RuntimeError(f"Unknown command #{command}")
 
