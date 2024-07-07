@@ -33,7 +33,7 @@ def main():
         with open(f".git/objects/{hash[:2]}/{hash[2:]}", "rb") as f:
             data = f.read()
             # decode data with zlib
-            data = zlib.decompress(data).decode()
+            data = zlib.decompress(data)
             print(data)
     else:
         raise RuntimeError(f"Unknown command #{command}")
