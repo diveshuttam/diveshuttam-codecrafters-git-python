@@ -22,7 +22,7 @@ def main():
         print(f"Hash: {hash}")
         with open(f".git/objects/{hash[:2]}/{hash[2:]}", "rb") as f:
             data = f.read()
-            print(data.decode())
+            print(data)
     else:
         raise RuntimeError(f"Unknown command #{command}")
 
