@@ -9,7 +9,7 @@ def print(*args, **kwargs):
 
 def dprint(data):
     # print data in a human-readable format
-    print(data)
+    __builtins__.print(data)
 
 
 def main():
