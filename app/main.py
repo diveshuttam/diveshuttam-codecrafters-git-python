@@ -45,10 +45,10 @@ def main():
             data = f.read()
             # add header to data
             header = f"blob {len(data)}\x00".encode()
+            # find hash of data
+            hash = hashlib.sha1(header + data).hexdigest()
             # compress data with zlib
             compressed_data = zlib.compress(header + data)
-            # calculate sha256 hash
-            hash = hashlib.sha256(compressed_data).hexdigest()
             # write data to file
             os.makedirs(f".git/objects/{hash[:2]}", exist_ok=True)
             with open(f".git/objects/{hash[:2]}/{hash[2:]}", "wb") as f:
