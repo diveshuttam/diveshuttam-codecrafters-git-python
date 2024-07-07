@@ -53,7 +53,7 @@ def main():
             os.makedirs(f".git/objects/{hash[:2]}", exist_ok=True)
             with open(f".git/objects/{hash[:2]}/{hash[2:]}", "wb") as f:
                 f.write(compressed_data)
-            print(hash)
+            dprint(hash)
     else:
         raise RuntimeError(f"Unknown command #{command}")
 
