@@ -31,7 +31,7 @@ def main():
         print(f"Hash: {hash}")
         with open(f".git/objects/{hash[:2]}/{hash[2:]}", "rb") as f:
             data = f.read()
-            dprint(data.decode("utf-16", errors="replace"))
+            dprint(data.decode("utf-8", errors="replace"))
     else:
         raise RuntimeError(f"Unknown command #{command}")
 
