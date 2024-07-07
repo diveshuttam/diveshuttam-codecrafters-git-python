@@ -64,6 +64,7 @@ def main():
             # skip till \x00
             data = data[data.index(b'\x00')+1:]
             # data = data.decode()
+            print(data)
             for line in data.split("\n"):
                 if not line:
                     continue
