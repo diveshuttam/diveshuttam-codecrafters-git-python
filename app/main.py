@@ -31,7 +31,12 @@ def main():
         print(f"Hash: {hash}")
         with open(f".git/objects/{hash[:2]}/{hash[2:]}", "rb") as f:
             data = f.read()
-            dprint(data.decode("utf-8", errors="replace"))
+            # find the encoding of the data
+            encoding = data[0]
+
+            # decode the data
+            decoded_data = data[1:].decode(encoding)
+            print(decoded_data)
     else:
         raise RuntimeError(f"Unknown command #{command}")
 
