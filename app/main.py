@@ -14,46 +14,41 @@ def dprint(*args, **kwargs):
 
 import struct
 
-def parse_data(data):
+def parse_git_tree(data):
     index = 0
     entries = []
-    
+
     while index < len(data):
-        # Read the type field (e.g., "tree")
-        type_end = data.find(b'\x00', index)
-        entry_type = data[index:type_end].decode('utf-8')
-        index = type_end + 1
-        
-        # Read the size field (e.g., "100")
-        size_end = data.find(b'\x00', index)
-        size = int(data[index:size_end].decode('utf-8'))
-        index = size_end + 1
-        
-        # Read the permission field (e.g., "40000")
-        perm_end = data.find(b' ', index)
-        permissions = data[index:perm_end].decode('utf-8')
-        index = perm_end + 1
-        
-        # Read the name field (e.g., "dooby")
+        # Read the mode field (e.g., "100644" or "40000")
+        mode_end = data.find(b' ', index)
+        mode = data[index:mode_end].decode('utf-8')
+        index = mode_end + 1
+
+        # Read the name field (null-terminated)
         name_end = data.find(b'\x00', index)
         name = data[index:name_end].decode('utf-8')
         index = name_end + 1
-        
-        # Read the hash/data field (20 bytes)
-        hash_data = data[index:index+20]
+
+        # Read the SHA-1 hash (20 bytes)
+        sha1_hash = data[index:index + 20]
         index += 20
-        
+
+        # Determine type based on mode
+        entry_type = 'tree' if mode == '40000' else 'blob'
+
         # Store the parsed entry
         entry = {
+            'mode': mode,
             'type': entry_type,
-            'size': size,
-            'permissions': permissions,
             'name': name,
-            'hash_data': hash_data.hex()
+            'sha1_hash': sha1_hash.hex()
         }
         entries.append(entry)
-    
+
     return entries
+
+
+
 
 def main():
     # You can use print statements as follows for debugging, they'll be visible when running tests.
@@ -104,9 +99,7 @@ def main():
             # decode data with zlib
             data = zlib.decompress(data)
             print(data)
-            # skip till \x00
-            data = data[data.index(b'\x00')+1:]
-            parsed_entries = parse_data(data)
+            parsed_entries = parse_git_tree(data)
             for entry in parsed_entries:
                 dprint(entry)
         
