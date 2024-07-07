@@ -1,5 +1,6 @@
 import sys
 import os
+import zlib
 
 def print(*args, **kwargs):
     # redirect to stderr to avoid mixing logs with data
@@ -31,7 +32,8 @@ def main():
         print(f"Hash: {hash}")
         with open(f".git/objects/{hash[:2]}/{hash[2:]}", "rb") as f:
             data = f.read()
-            # find the encoding of the data
+            # decode data with zlib
+            data = zlib.decompress(data).decode()
             print(data)
     else:
         raise RuntimeError(f"Unknown command #{command}")
