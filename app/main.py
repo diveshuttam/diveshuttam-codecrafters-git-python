@@ -18,7 +18,7 @@ def main():
         print("Initialized git directory")
     elif command == "cat-file":
         # cat-file -p <hash>
-        hash = sys.argv[2]
+        hash = sys.argv[3]
         print(f"Hash: {hash}")
         with open(f".git/objects/{hash[:2]}/{hash[2:]}", "rb") as f:
             data = f.read()
