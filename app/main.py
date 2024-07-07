@@ -37,6 +37,22 @@ def main():
             # skip till \x00
             data = data[data.index(b'\x00')+1:]
             dprint(data.decode(), end="")
+    elif command == "hash-object":
+        # hash-object -w <filename>
+        filename = sys.argv[3]
+        with open(filename, "rb") as f:
+            data = f.read()
+            # add header to data
+            header = f"blob {len(data)}\x00".encode()
+            # compress data with zlib
+            compressed_data = zlib.compress(header + data)
+            # calculate hash
+            hash = zlib.crc32(compressed_data).to_bytes(2, byteorder='big').hex()
+            # write data to file
+            os.makedirs(f".git/objects/{hash[:2]}", exist_ok=True)
+            with open(f".git/objects/{hash[:2]}/{hash[2:]}", "wb") as f:
+                f.write(compressed_data)
+            print(hash)
     else:
         raise RuntimeError(f"Unknown command #{command}")
 
