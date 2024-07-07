@@ -29,8 +29,9 @@ def main():
         # cat-file -p <hash>
         hash = sys.argv[3]
         print(f"Hash: {hash}")
-        with open(f".git/objects/{hash[:2]}/{hash[2:]}", "r") as f:
+        with open(f".git/objects/{hash[:2]}/{hash[2:]}", "rb") as f:
             data = f.read()
+            # find the encoding of the data
             print(data)
     else:
         raise RuntimeError(f"Unknown command #{command}")
