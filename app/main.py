@@ -15,39 +15,7 @@ def dprint(*args, **kwargs):
 import struct
 
 def parse_git_tree(data):
-    index = 0
-    entries = []
-
-    while index < len(data):
-        # Read the mode field (e.g., "100644" or "40000")
-        mode_end = data.find(b' ', index)
-        mode = data[index:mode_end].decode('utf-8')
-        index = mode_end + 1
-
-        # Read the name field (null-terminated)
-        name_end = data.find(b'\x00', index)
-        name = data[index:name_end].decode('utf-8')
-        index = name_end + 1
-
-        # Read the SHA-1 hash (20 bytes)
-        sha1_hash = data[index:index + 20]
-        index += 20
-
-        # Determine type based on mode
-        entry_type = 'tree' if mode == '40000' else 'blob'
-
-        # Store the parsed entry
-        entry = {
-            'mode': mode,
-            'type': entry_type,
-            'name': name,
-            'sha1_hash': sha1_hash.hex()
-        }
-        entries.append(entry)
-
-    return entries
-
-
+    
 
 
 def main():
@@ -69,11 +37,7 @@ def main():
         hash = sys.argv[3]
         print(f"Hash: {hash}")
         with open(f".git/objects/{hash[:2]}/{hash[2:]}", "rb") as f:
-            data = f.read()
-            # decode data with zlib
-            data = zlib.decompress(data)
-            # skip till \x00
-            data = data[data.index(b'\x00')+1:]
+            data = getCat(f)
             dprint(data.decode(), end="")
     elif command == "hash-object":
         # hash-object -w <filename>
@@ -95,16 +59,22 @@ def main():
         # --name-only
         hash = sys.argv[3]
         with open(f".git/objects/{hash[:2]}/{hash[2:]}", "rb") as f:
-            data = f.read()
             # decode data with zlib
-            data = zlib.decompress(data)
+            data = getCat(f)
             print(data)
-            parsed_entries = parse_git_tree(data)
-            for entry in parsed_entries:
-                dprint(entry)
+            # for entry in parsed_entries:
+            #     dprint(entry)
         
     else:
         raise RuntimeError(f"Unknown command #{command}")
+
+def getCat(f):
+    data = f.read()
+            # decode data with zlib
+    data = zlib.decompress(data)
+            # skip till \x00
+    data = data[data.index(b'\x00')+1:]
+    return data
 
 
 if __name__ == "__main__":
