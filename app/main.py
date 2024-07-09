@@ -39,7 +39,7 @@ def main():
         print(f"Hash: {hash}")
         with open(f".git/objects/{hash[:2]}/{hash[2:]}", "rb") as f:
             data = getCat(f)
-            dprint(data, end="")
+            dprint(data.decode(), end="")
     elif command == "hash-object":
         # hash-object -w <filename>
         filename = sys.argv[3]
@@ -75,7 +75,7 @@ def getCat(f):
     data = zlib.decompress(data)
             # skip till \x00
     data = data[data.index(b'\x00')+1:]
-    return data.decode()
+    return data
 
 
 if __name__ == "__main__":
